@@ -5,12 +5,15 @@ from cv_bridge import CvBridge
 import cv2
 import numpy as np
 
+# ノード名
+NODE_NAME = 'image_proc_node'  # 必要に応じて変更すること
+
 # 出力画像のエンコーディング形式
 PUBLISH_IMGMSG_ENCODING = 'mono8' # 必要に応じて変更すること
 
-NODE_NAME = 'image_proc_node' 
-SUBSCRIBE_TOPIC = '/image_src'
-PUBLISH_TOPIC = '/image_dst'
+# トピック名
+SUBSCRIBE_TOPIC = '/image_src' # 変更しないこと
+PUBLISH_TOPIC = '/image_dst' # 変更しないこと
 
 cv_bridge = None
 publisher_image_dst = None
