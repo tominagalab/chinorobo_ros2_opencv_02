@@ -5,7 +5,10 @@ from cv_bridge import CvBridge
 import cv2
 import numpy as np
 
-NODE_NAME = 'image_proc_node'
+# 出力画像のエンコーディング形式
+PUBLISH_IMGMSG_ENCODING = 'mono8' # 必要に応じて変更すること
+
+NODE_NAME = 'image_proc_node' 
 SUBSCRIBE_TOPIC = '/image_src'
 PUBLISH_TOPIC = '/image_dst'
 
@@ -24,7 +27,7 @@ def image_proc_callback(msg):
       # カラー画像として変換 (bgr8形式を想定)
       cv_src = cv_bridge.imgmsg_to_cv2(msg, desired_encoding='bgr8')
   except Exception as e:
-      rclpy.logging.get_logger('channel_splitter').error(f'CvBridge変換エラー: {e}')
+      rclpy.logging.get_logger(NODE_NAME).error(f'CvBridge変換エラー: {e}')
       return
   
   # --- 画像処理処理 ---
@@ -32,11 +35,11 @@ def image_proc_callback(msg):
   
   # 処理後の画像をROS2のImageメッセージに変換してパブリッシュ
   try:
-      dst_msg = cv_bridge.cv2_to_imgmsg(cv_dst, encoding="bgr8")
+      dst_msg = cv_bridge.cv2_to_imgmsg(cv_dst, encoding=PUBLISH_IMGMSG_ENCODING)
       dst_msg.header = msg.header # タイムスタンプなどのヘッダ情報をコピー
       publisher_image_dst.publish(dst_msg)
   except Exception as e:
-      rclpy.logging.get_logger('image_proc').error(f'画像パブリッシュエラー: {e}')  
+      rclpy.logging.get_logger(NODE_NAME).error(f'画像パブリッシュエラー: {e}')  
 
 def main(args=None):
   
@@ -75,7 +78,6 @@ def main(args=None):
       # --- ノード終了処理 ---
       node.destroy_node()
       rclpy.shutdown()
-
 
 if __name__ == '__main__':
     main()
